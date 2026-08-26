@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AEB Anatomy: Who Am I? | Structure & Ultrastructure of Neurons</title>
+<style>
+:root{
+  --yellow:#ffd500;
+  --navy:#17324a;
+  --bg:#f3f6f8;
+  --card:#fff;
+  --ink:#1d2832;
+  --muted:#6c7883;
+  --line:#dbe3e9;
+  --green:#4d9660;
+  --greenbg:#e5f4e9;
+  --red:#c94d4d;
+  --redbg:#fae7e7;
+  --shadow:0 12px 34px rgba(22,50,74,.11)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Avenir,Inter,"Segoe UI",Arial,sans-serif}
+header{background:var(--navy);color:#fff;border-bottom:7px solid var(--yellow)}
+.head{max-width:980px;margin:auto;padding:22px 18px 19px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.kicker{color:var(--yellow);font-size:12px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+h1{margin:3px 0 0;font-size:clamp(38px,7vw,66px);line-height:.9;letter-spacing:-.05em}
+.tagline{margin:9px 0 0;color:#d7e3ec;font-size:14px}
+.brand{text-align:right;color:#d7e3ec;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+main{max-width:980px;margin:auto;padding:22px 14px 42px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.hidden{display:none!important}
+.setup{padding:24px}
+.setup h2,.results h2{margin:0 0 8px;color:var(--navy)}
+.setup p{margin:0 0 18px;color:var(--muted);line-height:1.5}
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.mode{border:2px solid var(--line);background:#fff;border-radius:13px;min-height:88px;padding:13px;text-align:left;cursor:pointer;font:inherit}
+.mode.active{border-color:var(--navy);background:#edf4f9}
+.mode strong{display:block;color:var(--navy);font-size:18px}
+.mode span{display:block;color:var(--muted);font-size:12px;line-height:1.35;margin-top:4px}
+.primary,.secondary,.danger{border:0;border-radius:10px;min-height:44px;padding:10px 15px;font:inherit;font-weight:900;cursor:pointer}
+.primary{background:var(--navy);color:#fff}
+.secondary{background:#edf2f5;color:#2b4051}
+.danger{background:#fff0f0;color:#963030}
+button:focus-visible,input:focus-visible{outline:3px solid #79afd9;outline-offset:2px}
+.topbar{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:12px 14px;background:#f8fafb;border-bottom:1px solid var(--line)}
+.stat{text-align:center}
+.stat small{display:block;color:#82909c;text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:900}
+.stat strong{display:block;margin-top:2px;color:var(--navy);font-size:18px}
+.progress{height:8px;background:#dce3e8;overflow:hidden}
+.progress-fill{height:100%;width:0;background:var(--yellow);transition:width .25s ease}
+.game-body{padding:24px}
+.category{display:table;margin:0 auto 10px;padding:5px 10px;border-radius:999px;background:#edf4f9;color:var(--navy);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.prompt{text-align:center;color:var(--navy);font-size:clamp(26px,5vw,42px);font-weight:950;letter-spacing:-.03em;margin:8px auto 17px}
+.clue-stack{max-width:780px;margin:auto;display:grid;gap:8px}
+.clue{border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#f7f9fa;color:#6f7c87;font-size:13px;line-height:1.4;display:grid;grid-template-columns:32px 1fr;gap:8px;align-items:start}
+.clue.visible{background:#fffbea;border-color:#ead66b;color:#334451}
+.clue.current{border:2px solid var(--yellow);background:#fff7c5;color:var(--navy);font-weight:850}
+.clue-num{width:26px;height:26px;border-radius:7px;background:#e7edf1;display:grid;place-items:center;font-size:10px;font-weight:950;color:#5b6974}
+.clue.visible .clue-num{background:var(--yellow);color:#1b2b37}
+.guess-area{max-width:780px;margin:16px auto 0}
+.guess-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.autocomplete-wrap{position:relative;min-width:0}
+.guess-form input{width:100%;min-width:0;min-height:47px;border:2px solid #bec8d1;border-radius:10px;padding:10px 12px;font:inherit;font-size:16px}
+.suggestions{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 5px);
+  z-index:20;
+  background:#fff;
+  border:1px solid #cfd8df;
+  border-radius:10px;
+  box-shadow:0 10px 24px rgba(22,50,74,.14);
+  max-height:220px;
+  overflow-y:auto;
+  padding:5px;
+}
+.suggestion{
+  width:100%;
+  min-height:38px;
+  border:0;
+  border-radius:7px;
+  background:#fff;
+  color:#314452;
+  text-align:left;
+  padding:8px 10px;
+  font:inherit;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+.suggestion:hover,.suggestion.active{background:#edf4f9;color:var(--navy)}
+.no-suggestion{padding:9px 10px;color:#89949d;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.actions button{flex:1 1 150px}
+.feedback{min-height:30px;margin-top:10px;border-radius:9px;text-align:center;font-size:13px;font-weight:850;line-height:1.35}
+.feedback.good,.feedback.bad,.feedback.info{padding:9px 10px}
+.feedback.good{background:var(--greenbg);color:#34713f}
+.feedback.bad{background:var(--redbg);color:#923535}
+.feedback.info{background:#edf4f8;color:#3d5b72}
+.answer-reveal{max-width:780px;margin:12px auto 0;text-align:center;padding:13px;border-radius:11px;background:#f0f3f5;color:var(--navy);font-size:20px;font-weight:950}
+.next-wrap{text-align:center;margin-top:12px}
+.results{padding:24px;text-align:center}
+.big{font-size:62px;line-height:1;font-weight:950;color:var(--navy);letter-spacing:-.05em;margin:17px 0 6px}
+.result-grid{max-width:680px;margin:18px auto;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.result-card{background:#f4f7f9;border-radius:11px;padding:13px}
+.result-card small{display:block;color:#7b8792;text-transform:uppercase;letter-spacing:.08em;font-size:9px;font-weight:900}
+.result-card strong{display:block;margin-top:3px;color:var(--navy);font-size:23px}
+.footer{margin-top:17px;text-align:center;color:#84909a;font-size:11px}
+@media(max-width:650px){
+ .mode-grid{grid-template-columns:1fr}
+ .topbar{grid-template-columns:repeat(2,1fr)}
+ .guess-form{grid-template-columns:1fr}
+ .result-grid{grid-template-columns:1fr}
+ .brand{text-align:left}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="head">
+  <div>
+    <div class="kicker">Ageing & Endings B • Neuroanatomy</div>
+    <h1>Anatomy:<br>Who Am I?</h1>
+    <div class="tagline">Structure & Ultrastructure of Neurons</div>
+  </div>
+  <div class="brand">Progressive clues<br>identify the answer</div>
+</div>
+</header>
+
+<main>
+<section class="panel setup" id="setup">
+  <h2>Choose a game</h2>
+  <p>Identify each structure, functional area or clinical concept using as few clues as possible. The first clue is worth 5 points; each additional clue reduces the available score by 1.</p>
+  <div class="mode-grid">
+    <button class="mode active" type="button" data-count="10">
+      <strong>Quick 10</strong>
+      <span>Ten random identities for a fast review.</span>
+    </button>
+    <button class="mode" type="button" data-count="15">
+      <strong>Challenge 15</strong>
+      <span>A broader mix across the lecture.</span>
+    </button>
+    <button class="mode" type="button" data-count="999">
+      <strong>Full Lecture</strong>
+      <span>Work through the entire question bank.</span>
+    </button>
+  </div>
+  <button class="primary" id="startBtn" type="button">Start game</button>
+</section>
+
+<section class="panel hidden" id="game">
+  <div class="topbar">
+    <div class="stat"><small>Question</small><strong id="qStat">1 / 10</strong></div>
+    <div class="stat"><small>Score</small><strong id="scoreStat">0</strong></div>
+    <div class="stat"><small>Available</small><strong id="availStat">5</strong></div>
+    <div class="stat"><small>Streak</small><strong id="streakStat">0</strong></div>
+    <div class="stat"><small>Best early guess</small><strong id="bestStat">—</strong></div>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="game-body">
+    <div class="category" id="category"></div>
+    <div class="prompt">Who am I?</div>
+    <div class="clue-stack" id="clues"></div>
+
+    <div class="guess-area">
+      <form class="guess-form" id="guessForm">
+        <div class="autocomplete-wrap">
+          <input id="guessInput" autocomplete="off" spellcheck="false" placeholder="Type your answer…" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false">
+          <div class="suggestions hidden" id="suggestions" role="listbox"></div>
+        </div>
+        <button class="primary" type="submit">Guess</button>
+      </form>
+
+      <div class="actions">
+        <button class="secondary" id="nextClueBtn" type="button">Show next clue</button>
+        <button class="danger" id="revealBtn" type="button">Reveal answer</button>
+      </div>
+
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <div class="answer-reveal hidden" id="answerReveal"></div>
+
+      <div class="next-wrap hidden" id="nextWrap">
+        <button class="primary" id="nextBtn" type="button">Next identity →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel results hidden" id="results">
+  <h2>Game complete 🧠</h2>
+  <div class="big" id="finalScore">0</div>
+  <div style="color:var(--muted);font-size:13px">POINTS</div>
+
+  <div class="result-grid">
+    <div class="result-card"><small>Identified</small><strong id="rCorrect">0 / 10</strong></div>
+    <div class="result-card"><small>Average clues</small><strong id="rClues">0</strong></div>
+    <div class="result-card"><small>Best early guess</small><strong id="rBest">—</strong></div>
+  </div>
+
+  <div style="color:var(--muted)" id="resultMessage"></div>
+
+  <div class="actions" style="justify-content:center;max-width:500px;margin:17px auto 0">
+    <button class="primary" id="againBtn" type="button">Play again</button>
+    <button class="secondary" id="changeBtn" type="button">Change game</button>
+  </div>
+</section>
+
+<div class="footer">Based on the Structure & Ultrastructure of Neurons lecture.</div>
+</main>
+
+<script>
+(() => {
+const BANK = [{"answer": "Dendrites", "aliases": ["dendrites", "dendrite"], "category": "Neuron structure", "clues": ["I am one of the main structural regions of a neuron.", "I usually arise from the cell body.", "I am part of the receptive side of the neuron.", "I commonly receive synaptic input from other neurons.", "I am the branching processes that receive incoming signals."]}, {"answer": "Cell body / soma", "aliases": ["cell body / soma", "cell body", "soma"], "category": "Neuron structure", "clues": ["I am the neuron's major biosynthetic centre.", "I contain many of the neuron's organelles.", "I contain the nucleus and nucleolus.", "Nissl substance is found within me.", "I am the neuronal cell body, also called the soma."]}, {"answer": "Axon hillock", "aliases": ["axon hillock"], "category": "Neuron structure", "clues": ["I am part of the junction between the soma and a long neuronal process.", "Nissl substance is absent from me.", "I therefore appear relatively pale with Nissl staining.", "The axon emerges from me.", "I am the axon hillock."]}, {"answer": "Axon", "aliases": ["axon"], "category": "Neuron structure", "clues": ["I may or may not be surrounded by myelin.", "I contain mitochondria and cytoskeletal elements.", "Microtubules provide tracks for transport along me.", "An action potential travels along me toward the neuron's target.", "I am the neuron's main conducting process."]}, {"answer": "Axon terminals", "aliases": ["axon terminals", "axon terminal"], "category": "Neuron structure", "clues": ["I occur at the distal end of a neuronal process.", "I form the secretory component of the neuron.", "I contain synaptic vesicles at chemical synapses.", "I release neurotransmitter onto a target.", "I am the axon terminals."]}, {"answer": "Multipolar neuron", "aliases": ["multipolar neuron", "multipolar neurons", "multipolar"], "category": "Neuron morphology", "clues": ["I am one of the morphological classes of neuron.", "Cortical neurons can belong to my class.", "Pyramidal and Purkinje cells are examples of me.", "Lower motor neurons are also examples of me.", "I am the neuronal type with multiple processes arising from the soma."]}, {"answer": "Bipolar neuron", "aliases": ["bipolar neuron", "bipolar neurons", "bipolar"], "category": "Neuron morphology", "clues": ["I am one of the morphological classes of neuron.", "I am associated with specialised sensory systems.", "Retinal bipolar cells are examples of me.", "Olfactory neurons are also examples of me.", "I am a bipolar neuron."]}, {"answer": "Pseudounipolar neuron", "aliases": ["pseudounipolar neuron", "pseudounipolar neurons", "pseudounipolar", "unipolar / pseudounipolar"], "category": "Neuron morphology", "clues": ["I develop from a neuron that initially has two processes.", "Those processes later merge to form a single process leaving the soma.", "My cell body can be found in a PNS ganglion.", "Primary sensory neurons have my morphology.", "I am a pseudounipolar neuron."]}, {"answer": "Anaxonic neuron", "aliases": ["anaxonic neuron", "anaxonic neurons", "anaxonic"], "category": "Neuron morphology", "clues": ["I am one of the less common morphological classes in the lecture.", "I am represented by a retinal cell type.", "That retinal cell is the amacrine cell.", "My name reflects the lack of an obvious axon.", "I am an anaxonic neuron."]}, {"answer": "Grey matter", "aliases": ["grey matter", "gray matter"], "category": "Nervous tissue", "clues": ["I am one of the two major divisions of nervous tissue.", "I contain groups of neuronal cell bodies.", "In the CNS, I may be superficial or deep.", "Cortex and nuclei are examples of me in the CNS.", "I am grey matter."]}, {"answer": "White matter", "aliases": ["white matter"], "category": "Nervous tissue", "clues": ["I am one of the two major divisions of nervous tissue.", "I consist largely of bundles of axons travelling from origin to target.", "My colour is produced by myelinated axons.", "In the CNS my axon bundles are called tracts.", "I am white matter."]}, {"answer": "Cortex", "aliases": ["cortex"], "category": "Nervous tissue", "clues": ["I am a form of grey matter.", "I am found in the CNS.", "I contain neuronal cell bodies.", "Unlike nuclei, I am superficial.", "I am superficial CNS grey matter."]}, {"answer": "Nuclei", "aliases": ["nuclei", "nucleus"], "category": "Nervous tissue", "clues": ["I am a form of grey matter.", "I am found in the CNS.", "I contain groups of neuronal cell bodies.", "Unlike cortex, I am deep.", "I am deep CNS grey matter."]}, {"answer": "Ganglia", "aliases": ["ganglia", "ganglion"], "category": "Nervous tissue", "clues": ["I contain collections of neuronal cell bodies.", "I am not the term used for these collections within the CNS.", "A primary sensory neuron's cell body may lie within me.", "I belong to the PNS.", "I am the PNS equivalent of collections of neuronal somata."]}, {"answer": "Tracts", "aliases": ["tracts", "tract"], "category": "Nervous tissue", "clues": ["I am composed of bundles of axons.", "I contribute to white matter.", "I carry signals between an origin and a target.", "I am found in the CNS rather than PNS.", "I am the CNS term for bundles of axons."]}, {"answer": "Nissl stain", "aliases": ["nissl stain", "nissl staining", "nissl"], "category": "Staining", "clues": ["I am a histological method used to study nervous tissue.", "I stain nucleic acids.", "I particularly highlight ribosomal RNA.", "Soma, dendrites and nucleoli can appear dark with me.", "I am the stain used to demonstrate Nissl substance."]}, {"answer": "Myelin stain", "aliases": ["myelin stain", "myelin staining"], "category": "Staining", "clues": ["I reveal a different tissue pattern from Nissl staining.", "I make neuronal soma relatively pale.", "I highlight white-matter pathways.", "Axons and tracts appear dark with me.", "I am a myelin stain."]}, {"answer": "Golgi stain", "aliases": ["golgi stain", "golgi staining"], "category": "Staining", "clues": ["I am a classic method for visualising neuronal morphology.", "I do not stain every cell in the tissue.", "I randomly stain fewer than about 5% of neurons and glia.", "The cells I select are stained in their entirety.", "I use silver chromate impregnation."]}, {"answer": "NeuN", "aliases": ["neun", "NeuN"], "category": "Staining", "clues": ["I am used as an example in a more selective staining method.", "That method uses antibodies against specific proteins.", "I am associated with neurons rather than myelin.", "I am described as a neuronal nuclear protein.", "I am NeuN."]}, {"answer": "Brainbow", "aliases": ["brainbow", "brainbow staining"], "category": "Staining", "clues": ["I am one of the 'other staining methods' in the lecture.", "I am not based on silver chromate.", "I use fluorescent proteins.", "Those proteins are inserted into the genome of transgenic animals.", "I am Brainbow staining."]}, {"answer": "Nucleolus", "aliases": ["nucleolus"], "category": "Ultrastructure", "clues": ["I am prominent within a neuron's nucleus.", "I am strongly demonstrated by Nissl stain.", "My staining reflects a high concentration of a nucleic acid.", "I am rich in ribosomal RNA.", "I am the nucleolus."]}, {"answer": "Nissl substance", "aliases": ["nissl substance", "nissl bodies", "nissl body"], "category": "Ultrastructure", "clues": ["I am found in some, but not all, regions of a neuron.", "I am absent from the axon hillock and axon.", "I am present in the soma and dendrites.", "I am rich in ribosomal RNA and involved in protein synthesis.", "I am rough endoplasmic reticulum, also called Nissl substance."]}, {"answer": "Golgi apparatus", "aliases": ["golgi apparatus", "golgi"], "category": "Ultrastructure", "clues": ["I am an organelle within the neuron.", "Unlike mitochondria, I am restricted to one major neuronal region.", "I am located only in the soma.", "My major function is packaging proteins.", "I am the Golgi apparatus."]}, {"answer": "Mitochondria", "aliases": ["mitochondria", "mitochondrion"], "category": "Ultrastructure", "clues": ["I am abundant in neurons.", "I can be found in soma, dendrites and axon.", "I may be seen near synaptic regions in electron micrographs.", "My major role is energy production.", "I am mitochondria."]}, {"answer": "Microtubules", "aliases": ["microtubules", "microtubule"], "category": "Ultrastructure", "clues": ["I am one component of the neuronal cytoskeleton.", "My diameter is given as about 20 nm.", "I contribute to intracellular transport.", "I form 'railway tracks' for axoplasmic transport.", "I am microtubules."]}, {"answer": "Neurofilaments", "aliases": ["neurofilaments", "neurofilament"], "category": "Ultrastructure", "clues": ["I am part of the neuronal cytoskeleton.", "I help maintain neuronal shape.", "I am smaller in diameter than microtubules.", "My diameter is given as about 10 nm.", "I am neurofilaments."]}, {"answer": "Anterograde transport", "aliases": ["anterograde transport", "anterograde"], "category": "Axoplasmic transport", "clues": ["I am one direction of axoplasmic transport.", "I use microtubules as tracks.", "Neurotransmitter proteins are given as an example of my cargo.", "I move material away from the cell body.", "I am anterograde transport."]}, {"answer": "Retrograde transport", "aliases": ["retrograde transport", "retrograde"], "category": "Axoplasmic transport", "clues": ["I am one direction of axoplasmic transport.", "I use microtubules as tracks.", "Metabolic byproducts are given as an example of my cargo.", "I move material toward the cell body.", "I am retrograde transport."]}, {"answer": "Synaptic vesicles", "aliases": ["synaptic vesicles", "synaptic vesicle", "neurotransmitter vesicles", "neurotransmitter vesicle"], "category": "Synapses", "clues": ["I am concentrated on one side of a chemical synapse.", "I am found in the presynaptic compartment.", "I contain a chemical messenger.", "I release neurotransmitter.", "I am synaptic vesicles."]}, {"answer": "Synaptic cleft", "aliases": ["synaptic cleft"], "category": "Synapses", "clues": ["I am part of a chemical synapse.", "I contain neither the presynaptic vesicles nor the postsynaptic receptors.", "I lie between the two synaptic compartments.", "Neurotransmitter crosses me after release.", "I am the synaptic cleft."]}, {"answer": "Postsynaptic thickening", "aliases": ["postsynaptic thickening", "postsynaptic density"], "category": "Synapses", "clues": ["I am found on the receiving side of a chemical synapse.", "I am associated with neurotransmitter receptors.", "I can be identified in electron microscopy.", "I appear as a dark-stained region.", "I am the postsynaptic thickening."]}, {"answer": "Dendritic spines", "aliases": ["dendritic spines", "dendritic spine"], "category": "Synapses", "clues": ["I am numerous small processes rather than large neuronal branches.", "I occur on dendrites.", "Axospinous synapses form on me.", "I am dynamic rather than fixed.", "I am thought to contribute to mechanisms of learning and memory."]}, {"answer": "Astrocyte", "aliases": ["astrocyte", "astrocytes"], "category": "Glia", "clues": ["I am a supporting cell found in the CNS.", "I nourish and repair nervous tissue.", "I help maintain electrolyte balance.", "I contribute to the blood-brain barrier and aid synapse formation.", "My name means 'star cell'."]}, {"answer": "Microglia", "aliases": ["microglia"], "category": "Glia", "clues": ["I am a supporting cell found in the CNS.", "I have a defensive and clean-up role.", "I remove debris and dead cells.", "I also remove invading organisms.", "I am microglia."]}, {"answer": "Schwann cell", "aliases": ["schwann cell", "schwann cells"], "category": "Glia & myelin", "clues": ["I am a glial cell involved in myelin formation.", "I am found in the PNS.", "I wrap myself around an axon.", "One of me wraps a single axon.", "I am a Schwann cell."]}, {"answer": "Oligodendrocyte", "aliases": ["oligodendrocyte", "oligodendrocytes"], "category": "Glia & myelin", "clues": ["I am a glial cell involved in myelin formation.", "I am found in the CNS.", "I differ from Schwann cells in the number of axons I can myelinate.", "I can wrap around multiple axons.", "I am an oligodendrocyte."]}, {"answer": "Myelin sheath", "aliases": ["myelin sheath", "myelin"], "category": "Glia & myelin", "clues": ["I am produced by different glial cells in the CNS and PNS.", "I am tight and lipid rich.", "I am segmented rather than continuous.", "I greatly increase conduction velocity along an axon.", "I am the myelin sheath."]}, {"answer": "Nodes of Ranvier", "aliases": ["nodes of ranvier", "node of ranvier"], "category": "Glia & myelin", "clues": ["I am associated with a myelinated axon.", "I separate adjacent segments of the myelin sheath.", "Electrical current effectively jumps between locations like me.", "My presence contributes to rapid conduction.", "I am the Nodes of Ranvier."]}];
+const ANSWER_SUGGESTIONS = ["Anaxonic neuron", "Anterograde transport", "Astrocyte", "Axon", "Axon hillock", "Axon terminals", "Bipolar neuron", "Brainbow", "Cell body / soma", "Cortex", "Dendrites", "Dendritic spines", "Ganglia", "Golgi apparatus", "Golgi stain", "Grey matter", "Microglia", "Microtubules", "Mitochondria", "Multipolar neuron", "Myelin sheath", "Myelin stain", "NeuN", "Neurofilaments", "Nissl stain", "Nissl substance", "Nodes of Ranvier", "Nuclei", "Nucleolus", "Oligodendrocyte", "Postsynaptic thickening", "Pseudounipolar neuron", "Retrograde transport", "Schwann cell", "Synaptic cleft", "Synaptic vesicles", "Tracts", "White matter"];
+
+let selectedCount=10;
+let deck=[];
+let index=0;
+let clueIndex=0;
+let score=0;
+let streak=0;
+let bestEarly=null;
+let identified=0;
+let totalCluesUsed=0;
+let finishedQuestion=false;
+
+const setup=document.getElementById('setup');
+const game=document.getElementById('game');
+const results=document.getElementById('results');
+const cluesEl=document.getElementById('clues');
+const guessInput=document.getElementById('guessInput');
+const suggestionsEl=document.getElementById('suggestions');
+const feedback=document.getElementById('feedback');
+let suggestionMatches=[];
+let suggestionIndex=-1;
+const answerReveal=document.getElementById('answerReveal');
+const nextWrap=document.getElementById('nextWrap');
+
+function shuffle(a){
+  const x=[...a];
+  for(let i=x.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [x[i],x[j]]=[x[j],x[i]];
+  }
+  return x;
+}
+
+function norm(s){
+  return (s||'').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[’']/g,'')
+    .replace(/&/g,'and')
+    .replace(/[^a-z0-9]/g,'');
+}
+
+document.querySelectorAll('.mode').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCount=Number(btn.dataset.count);
+  });
+});
+
+
+function hideSuggestions(){
+  suggestionsEl.classList.add('hidden');
+  suggestionsEl.innerHTML='';
+  suggestionMatches=[];
+  suggestionIndex=-1;
+  guessInput.setAttribute('aria-expanded','false');
+}
+
+function chooseSuggestion(value){
+  guessInput.value=value;
+  hideSuggestions();
+  guessInput.focus();
+}
+
+function updateSuggestions(){
+  if(finishedQuestion || guessInput.disabled){
+    hideSuggestions();
+    return;
+  }
+
+  const raw=guessInput.value.trim().toLowerCase();
+  if(raw.length<1){
+    hideSuggestions();
+    return;
+  }
+
+  suggestionMatches=ANSWER_SUGGESTIONS
+    .filter(x=>x.toLowerCase().includes(raw))
+    .sort((a,b)=>{
+      const al=a.toLowerCase(), bl=b.toLowerCase();
+      const aStart=al.startsWith(raw)?0:1;
+      const bStart=bl.startsWith(raw)?0:1;
+      if(aStart!==bStart)return aStart-bStart;
+      return al.localeCompare(bl);
+    })
+    .slice(0,8);
+
+  suggestionsEl.innerHTML='';
+  suggestionIndex=-1;
+
+  if(!suggestionMatches.length){
+    hideSuggestions();
+    return;
+  }
+
+  suggestionMatches.forEach((value,i)=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='suggestion';
+    b.setAttribute('role','option');
+    b.textContent=value;
+    b.addEventListener('mousedown',e=>{
+      e.preventDefault();
+      chooseSuggestion(value);
+    });
+    suggestionsEl.appendChild(b);
+  });
+
+  suggestionsEl.classList.remove('hidden');
+  guessInput.setAttribute('aria-expanded','true');
+}
+
+function moveSuggestion(delta){
+  if(suggestionsEl.classList.contains('hidden') || !suggestionMatches.length)return false;
+  suggestionIndex += delta;
+  if(suggestionIndex<0)suggestionIndex=suggestionMatches.length-1;
+  if(suggestionIndex>=suggestionMatches.length)suggestionIndex=0;
+  [...suggestionsEl.querySelectorAll('.suggestion')].forEach((b,i)=>{
+    b.classList.toggle('active',i===suggestionIndex);
+  });
+  return true;
+}
+
+function start(){
+  deck=shuffle(BANK).slice(0,Math.min(selectedCount,BANK.length));
+  index=0;clueIndex=0;score=0;streak=0;bestEarly=null;identified=0;totalCluesUsed=0;finishedQuestion=false;
+  setup.classList.add('hidden');
+  results.classList.add('hidden');
+  game.classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  clueIndex=0;
+  finishedQuestion=false;
+  guessInput.disabled=false;
+  guessInput.value='';
+  hideSuggestions();
+  feedback.textContent='';
+  feedback.className='feedback';
+  answerReveal.classList.add('hidden');
+  answerReveal.textContent='';
+  nextWrap.classList.add('hidden');
+  document.getElementById('nextClueBtn').disabled=false;
+  document.getElementById('revealBtn').disabled=false;
+
+  const q=deck[index];
+  document.getElementById('category').textContent=q.category;
+  renderClues();
+  updateStats();
+  setTimeout(()=>guessInput.focus(),20);
+}
+
+function renderClues(){
+  const q=deck[index];
+  cluesEl.innerHTML='';
+  q.clues.forEach((clue,i)=>{
+    const d=document.createElement('div');
+    const visible=i<=clueIndex;
+    d.className='clue'+(visible?' visible':'')+(i===clueIndex?' current':'');
+    d.innerHTML=`<div class="clue-num">${i+1}</div><div>${visible?clue:'Clue hidden'}</div>`;
+    cluesEl.appendChild(d);
+  });
+}
+
+function showNextClue(){
+  if(finishedQuestion)return;
+  if(clueIndex<4){
+    clueIndex++;
+    renderClues();
+    updateStats();
+    setFeedback('Another clue revealed.','info');
+    guessInput.focus();
+  }
+  if(clueIndex>=4)document.getElementById('nextClueBtn').disabled=true;
+}
+
+function guess(){
+  if(finishedQuestion)return;
+  const val=guessInput.value.trim();
+  if(!val){setFeedback('Type an answer first.','info');return}
+
+  const q=deck[index];
+  const accepted=[q.answer,...q.aliases].map(norm);
+
+  if(accepted.includes(norm(val))){
+    const points=5-clueIndex;
+    score+=points;
+    streak++;
+    identified++;
+    totalCluesUsed+=clueIndex+1;
+    if(bestEarly===null || clueIndex+1<bestEarly)bestEarly=clueIndex+1;
+    finishQuestion(true,`Correct — ${points} point${points===1?'':'s'}!`);
+  }else{
+    streak=0;
+    if(clueIndex<4){
+      clueIndex++;
+      renderClues();
+      updateStats();
+      setFeedback('Not quite — another clue has been revealed.','bad');
+      guessInput.value='';
+      guessInput.focus();
+      if(clueIndex>=4)document.getElementById('nextClueBtn').disabled=true;
+    }else{
+      setFeedback('Not quite. You can try again or reveal the answer.','bad');
+      guessInput.select();
+    }
+  }
+}
+
+function reveal(){
+  if(finishedQuestion)return;
+  totalCluesUsed+=clueIndex+1;
+  streak=0;
+  finishQuestion(false,`Answer: ${deck[index].answer}`);
+}
+
+function finishQuestion(correct,msg){
+  finishedQuestion=true;
+  hideSuggestions();
+  guessInput.disabled=true;
+  document.getElementById('nextClueBtn').disabled=true;
+  document.getElementById('revealBtn').disabled=true;
+  answerReveal.textContent=deck[index].answer;
+  answerReveal.classList.remove('hidden');
+  setFeedback(msg,correct?'good':'info');
+  nextWrap.classList.remove('hidden');
+  document.getElementById('nextBtn').textContent=index===deck.length-1?'See results →':'Next identity →';
+  updateStats();
+}
+
+function next(){
+  if(!finishedQuestion)return;
+  if(index>=deck.length-1){finishGame();return}
+  index++;
+  renderQuestion();
+}
+
+function updateStats(){
+  document.getElementById('qStat').textContent=`${index+1} / ${deck.length}`;
+  document.getElementById('scoreStat').textContent=score;
+  document.getElementById('availStat').textContent=5-clueIndex;
+  document.getElementById('streakStat').textContent=streak;
+  document.getElementById('bestStat').textContent=bestEarly===null?'—':`${bestEarly} clue${bestEarly===1?'':'s'}`;
+  document.getElementById('progressFill').style.width=`${((index+(finishedQuestion?1:0))/deck.length)*100}%`;
+}
+
+function finishGame(){
+  game.classList.add('hidden');
+  results.classList.remove('hidden');
+
+  const avg=deck.length? (totalCluesUsed/deck.length).toFixed(1):'0';
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('rCorrect').textContent=`${identified} / ${deck.length}`;
+  document.getElementById('rClues').textContent=avg;
+  document.getElementById('rBest').textContent=bestEarly===null?'—':`${bestEarly} clue${bestEarly===1?'':'s'}`;
+
+  const max=deck.length*5;
+  const pct=max?score/max:0;
+  let msg;
+  if(pct>=.8)msg='Excellent identification from very limited information.';
+  else if(pct>=.6)msg='Strong recognition — many concepts identified from early clues.';
+  else if(pct>=.4)msg='Good coverage. Another round should improve early recognition.';
+  else msg='You completed the set — repeat it and aim to identify each answer earlier.';
+  document.getElementById('resultMessage').textContent=msg;
+}
+
+function setFeedback(text,type){
+  feedback.textContent=text;
+  feedback.className=`feedback ${type||''}`;
+}
+
+
+guessInput.addEventListener('input',updateSuggestions);
+
+guessInput.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){
+    if(moveSuggestion(1))e.preventDefault();
+  }else if(e.key==='ArrowUp'){
+    if(moveSuggestion(-1))e.preventDefault();
+  }else if(e.key==='Escape'){
+    hideSuggestions();
+  }else if(e.key==='Enter' && suggestionIndex>=0 && suggestionMatches[suggestionIndex]){
+    e.preventDefault();
+    chooseSuggestion(suggestionMatches[suggestionIndex]);
+  }
+});
+
+guessInput.addEventListener('blur',()=>{
+  setTimeout(hideSuggestions,120);
+});
+
+document.getElementById('guessForm').addEventListener('submit',e=>{e.preventDefault();guess()});
+document.getElementById('nextClueBtn').addEventListener('click',showNextClue);
+document.getElementById('revealBtn').addEventListener('click',reveal);
+document.getElementById('nextBtn').addEventListener('click',next);
+document.getElementById('startBtn').addEventListener('click',start);
+document.getElementById('againBtn').addEventListener('click',start);
+document.getElementById('changeBtn').addEventListener('click',()=>{
+  results.classList.add('hidden');
+  setup.classList.remove('hidden');
+});
+})();
+</script>
+</body>
+</html>
